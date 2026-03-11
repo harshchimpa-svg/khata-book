@@ -1,0 +1,14 @@
+/Users/apple/Harsh/Backend/KhataBook1/Domain/bin/Debug/net10.0/Domain.deps.json
+/Users/apple/Harsh/Backend/KhataBook1/Domain/bin/Debug/net10.0/Domain.runtimeconfig.json
+/Users/apple/Harsh/Backend/KhataBook1/Domain/bin/Debug/net10.0/Domain.dll
+/Users/apple/Harsh/Backend/KhataBook1/Domain/bin/Debug/net10.0/Domain.pdb
+/Users/apple/Harsh/Backend/KhataBook1/Domain/obj/Debug/net10.0/Domain.csproj.AssemblyReference.cache
+/Users/apple/Harsh/Backend/KhataBook1/Domain/obj/Debug/net10.0/Domain.GeneratedMSBuildEditorConfig.editorconfig
+/Users/apple/Harsh/Backend/KhataBook1/Domain/obj/Debug/net10.0/Domain.AssemblyInfoInputs.cache
+/Users/apple/Harsh/Backend/KhataBook1/Domain/obj/Debug/net10.0/Domain.AssemblyInfo.cs
+/Users/apple/Harsh/Backend/KhataBook1/Domain/obj/Debug/net10.0/Domain.csproj.CoreCompileInputs.cache
+/Users/apple/Harsh/Backend/KhataBook1/Domain/obj/Debug/net10.0/Domain.dll
+/Users/apple/Harsh/Backend/KhataBook1/Domain/obj/Debug/net10.0/refint/Domain.dll
+/Users/apple/Harsh/Backend/KhataBook1/Domain/obj/Debug/net10.0/Domain.pdb
+/Users/apple/Harsh/Backend/KhataBook1/Domain/obj/Debug/net10.0/Domain.genruntimeconfig.cache
+/Users/apple/Harsh/Backend/KhataBook1/Domain/obj/Debug/net10.0/ref/Domain.dll
