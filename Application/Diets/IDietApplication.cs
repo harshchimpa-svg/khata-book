@@ -1,6 +1,6 @@
 namespace Application.Dites.Dto;
 
-public interface IDiteApplication
+public interface IDietApplication
 {
     Task<string> Create(CreateDietDto dto);
     Task Delete(int id);

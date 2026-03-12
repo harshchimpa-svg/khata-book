@@ -4,9 +4,9 @@ namespace Application.Exercises;
 
 public interface IExerciseApplication
 {
-    Task<string> Create(CreateErciseDto dto);
+    Task<string> Create(CreateExerciseDto dto);
     Task Delete(int id);
     Task<List<ExerciseDto>> GetAll();
     Task<ExerciseDto> GetById(int id);
-    Task Update(int Id, CreateErciseDto update);
+    Task Update(int Id, CreateExerciseDto update);
 }

@@ -16,14 +16,14 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost("create")]
-        public async Task<IActionResult> Create(CreateErciseDto dto)
+        public async Task<IActionResult> Create(CreateExerciseDto dto)
         {
             var result = await _exerciseApplication.Create(dto);
             return Ok(result);
         }
 
         [HttpPut("update/{id}")]
-        public async Task<IActionResult> Update(int id, CreateErciseDto dto)    
+        public async Task<IActionResult> Update(int id, CreateExerciseDto dto)    
         {
             await _exerciseApplication.Update(id, dto);
             return Ok("Exercise Updated"); 

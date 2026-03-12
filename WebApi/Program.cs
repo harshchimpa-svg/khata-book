@@ -88,7 +88,7 @@ builder.Services.AddTransient<IContactApplication, ContactApplication>();
 builder.Services.AddTransient<IDietDocumentRepository, DietDocumentRepository>();
 builder.Services.AddTransient<IDietDocumentApplication, DietDocumentApplication>();
 builder.Services.AddTransient<IDietRepository, DietRepository>();
-builder.Services.AddTransient<IDiteApplication, DietApplication>();
+builder.Services.AddTransient<IDietApplication, DietApplication>();
 builder.Services.AddTransient<IDashBoardApplication, DashBoardApplication>();
 builder.Services.AddTransient<IExerciseRepository, ExerciseRepository>();
 builder.Services.AddTransient<IExerciseApplication, ExerciseApplication>();

@@ -9,6 +9,6 @@ public class ExerciseDocument
     [ForeignKey("Exercise")]
     public int? ExerciseId { get; set; }
     public Exercise? Exercise { get; set; }
-     
+    
     public string Document { get; set; }
 }

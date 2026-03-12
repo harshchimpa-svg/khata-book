@@ -4,7 +4,7 @@ using Domain;
 
 namespace Application.Dites
 {
-    public class DietApplication : IDiteApplication
+    public class DietApplication : IDietApplication
     {
         private readonly IDietRepository _dietRepository;
 

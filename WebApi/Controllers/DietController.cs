@@ -8,9 +8,9 @@ namespace ManjeetFigma.Controllers
     [ApiController]
     public class DietController : ControllerBase
     {
-        private readonly IDiteApplication _dietApp;
+        private readonly IDietApplication _dietApp;
 
-        public DietController(IDiteApplication dietApp)
+        public DietController(IDietApplication dietApp)
         {
             _dietApp = dietApp;
         }

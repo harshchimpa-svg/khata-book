@@ -18,7 +18,7 @@ public class DataContext:DbContext
     public DbSet<PaymentLog> PaymentLogs { get; set; }
     public DbSet<Category> Categorys { get; set; }
     public DbSet<Contact> Contacts { get; set; }
-    public DbSet<DiteType> DiteTypes { get; set; }
+    public DbSet<DietType> DiteTypes { get; set; }
     public DbSet<Diet> Dites { get; set; }
     public DbSet<DietDocument> DietDocuments { get; set; }
     public DbSet<Exercise> Exercises { get; set; }

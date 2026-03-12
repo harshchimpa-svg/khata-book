@@ -13,7 +13,7 @@ namespace Application.Exercises
             _exerciseRepository = exerciseRepository;
         }
 
-        public async Task<string> Create(CreateErciseDto dto)
+        public async Task<string> Create(CreateExerciseDto dto)
         {
             var exercise = new Exercise
             {
@@ -26,7 +26,7 @@ namespace Application.Exercises
             return "Exercise Created";
         }
 
-        public async Task Update(int id, CreateErciseDto dto)
+        public async Task Update(int id, CreateExerciseDto dto)
         {
             var exercise = await _exerciseRepository.GetById(id);
             if (exercise == null) throw new Exception("Exercise not found");

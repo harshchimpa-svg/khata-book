@@ -1,6 +1,6 @@
 namespace Domain;
 
-public class DiteType
+public class DietType
 {
     public int Id { get; set; }
     public string? Name { get; set; }

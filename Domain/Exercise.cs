@@ -6,9 +6,9 @@ public class Exercise
 {
     public int Id { get; set; }
     
-    [ForeignKey("DiteType")]
+    [ForeignKey("DietType")]
     public int? DietTypeId { get; set; }
-    public DiteType? DietType { get; set; }
+    public DietType? DietType { get; set; }
     
     public string Name { get; set; }
     public string? Description { get; set; }

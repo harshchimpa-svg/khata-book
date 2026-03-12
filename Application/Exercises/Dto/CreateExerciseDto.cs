@@ -1,6 +1,6 @@
 namespace Application.Exercises.Dto;
 
-public class CreateErciseDto
+public class CreateExerciseDto
 {
     public int? DietTypeId { get; set; }
     public string Name { get; set; }
