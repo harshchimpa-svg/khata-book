@@ -1,5 +1,6 @@
 using Application.Customers;
 using Application.Customers.Dto;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebApplication2.Controllers
@@ -15,6 +16,7 @@ namespace WebApplication2.Controllers
             _customerApplication = customerApplication;
         }
 
+        [Authorize(Roles =  "Admin,Employee")]
         [HttpPost]
         public async Task<IActionResult> Create([FromForm] CreateCustomerDto input)
         {
@@ -29,6 +31,7 @@ namespace WebApplication2.Controllers
             }
         }
 
+        [Authorize(Roles =  "Admin,Employee")]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
@@ -46,6 +49,7 @@ namespace WebApplication2.Controllers
             }
         }
 
+        [Authorize(Roles =  "Admin,Employee")]
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
@@ -60,6 +64,7 @@ namespace WebApplication2.Controllers
             }
         }
 
+        [Authorize(Roles =  "Admin,Employee")]
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, [FromForm] CreateCustomerDto input)
         {
@@ -74,6 +79,7 @@ namespace WebApplication2.Controllers
             }
         }
 
+        [Authorize(Roles =  "Admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
@@ -88,6 +94,7 @@ namespace WebApplication2.Controllers
             }
         }
 
+        [Authorize(Roles =  "Admin,Employee")]
         [HttpPost("{id}/block")]
         public async Task<IActionResult> BlockCustomer(int id)
         {
@@ -102,6 +109,7 @@ namespace WebApplication2.Controllers
             }
         }
 
+        [Authorize(Roles =  "Admin,Employee")]
         [HttpPost("send-reminder")]
         public async Task<IActionResult> SendReminder()
         {

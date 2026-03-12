@@ -1,5 +1,6 @@
 using Application.ShopSettings;
 using Application.ShopSettings.Dto;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebApi.Controllers
@@ -15,6 +16,7 @@ namespace WebApi.Controllers
             _shopSettingApplication = shopSettingApplication;
         }
 
+        [Authorize(Roles =  "Admin")]
         [HttpPost]
         public async Task<IActionResult> Create([FromForm] CreateShopSettingDto input)
         {
@@ -22,6 +24,7 @@ namespace WebApi.Controllers
             return Ok(result);
         }
 
+        [Authorize(Roles =  "Admin")]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
@@ -32,6 +35,7 @@ namespace WebApi.Controllers
             return Ok(shopSetting);
         }
 
+        [Authorize(Roles =  "Admin")]
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
@@ -39,6 +43,7 @@ namespace WebApi.Controllers
             return Ok(list);
         }
 
+        [Authorize(Roles =  "Admin")]
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, [FromForm] CreateShopSettingDto input)
         {
@@ -46,6 +51,7 @@ namespace WebApi.Controllers
             return Ok("Shop Setting updated successfully");
         }
 
+        [Authorize(Roles =  "Admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {

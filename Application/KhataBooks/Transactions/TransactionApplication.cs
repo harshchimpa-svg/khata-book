@@ -1,7 +1,9 @@
+using System.Security.Claims;
 using Application.Transactions.Dto;
 using Data;
 using Domain;
 using Domain.Enums;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 
 namespace Application.Transactions;
@@ -9,20 +11,43 @@ namespace Application.Transactions;
 public class TransactionApplication : ITransactionApplication
 {
     private readonly DataContext _datacontext;
+    private readonly IHttpContextAccessor _httpContextAccessor;
 
-    public TransactionApplication(DataContext datacontext)
+    public TransactionApplication(
+        DataContext datacontext,
+        IHttpContextAccessor httpContextAccessor)
     {
         _datacontext = datacontext;
+        _httpContextAccessor = httpContextAccessor;
+    }
+
+    private string GetUserId()
+    {
+        var userId = _httpContextAccessor.HttpContext?.User?
+            .FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        if (string.IsNullOrEmpty(userId))
+            throw new Exception("User not authenticated");
+
+        return userId;
     }
 
     public async Task<string> Create(CreateTransactionDto dto)
     {
-        var customer = await _datacontext.Customers.FindAsync(dto.CustomerId);
+        var userId = GetUserId();
 
-        var transaction = new Transaction();
-        transaction.CustomerId = dto.CustomerId;
-        transaction.TransactionType = dto.TransactionType;
-        transaction.Amount = dto.Amount;
+        var customer = await _datacontext.Customers
+            .FirstOrDefaultAsync(x => x.Id == dto.CustomerId && x.UserId == userId);
+
+        if (customer == null)
+            throw new Exception("Customer not found or unauthorized");
+
+        var transaction = new Transaction
+        {
+            CustomerId = dto.CustomerId,
+            TransactionType = dto.TransactionType,
+            Amount = dto.Amount
+        };
 
         await _datacontext.Transactions.AddAsync(transaction);
 
@@ -31,10 +56,12 @@ public class TransactionApplication : ITransactionApplication
         else
             customer.Balance -= dto.Amount;
 
-        var paymentLog = new PaymentLog();
-        paymentLog.CustomerId = dto.Customer.Id;
-        paymentLog.Amount = dto.Amount;
-        paymentLog.TransactionType = dto.TransactionType;
+        var paymentLog = new PaymentLog
+        {
+            CustomerId = customer.Id,
+            Amount = dto.Amount,
+            TransactionType = dto.TransactionType
+        };
 
         await _datacontext.PaymentLogs.AddAsync(paymentLog);
 
@@ -45,8 +72,19 @@ public class TransactionApplication : ITransactionApplication
 
     public async Task Delete(int id)
     {
-        var transaction = await _datacontext.Transactions.FindAsync(id);
-        var customer = await _datacontext.Customers.FindAsync(transaction.CustomerId);
+        var userId = GetUserId();
+
+        var transaction = await _datacontext.Transactions
+            .FirstOrDefaultAsync(x => x.Id == id);
+
+        if (transaction == null)
+            throw new Exception("Transaction not found");
+
+        var customer = await _datacontext.Customers
+            .FirstOrDefaultAsync(x => x.Id == transaction.CustomerId && x.UserId == userId);
+
+        if (customer == null)
+            throw new Exception("Unauthorized access");
 
         if (transaction.TransactionType == TransactionType.Credit)
             customer.Balance -= transaction.Amount;
@@ -60,16 +98,24 @@ public class TransactionApplication : ITransactionApplication
 
     public async Task<List<TransactionDto>> GetAll()
     {
-        var transactions = await _datacontext.Transactions.ToListAsync();
+        var userId = GetUserId();
+
+        var transactions = await _datacontext.Transactions
+            .Include(x => x.Customer)
+            .Where(x => x.Customer.UserId == userId)
+            .ToListAsync();
+
         var list = new List<TransactionDto>();
 
         foreach (var t in transactions)
         {
-            var dto = new TransactionDto();
-            dto.Id = t.Id;
-            dto.CustomerId = t.CustomerId;
-            dto.TransactionType = t.TransactionType;
-            dto.Amount = t.Amount;
+            var dto = new TransactionDto
+            {
+                Id = t.Id,
+                CustomerId = t.CustomerId,
+                TransactionType = t.TransactionType,
+                Amount = t.Amount
+            };
 
             list.Add(dto);
         }
@@ -79,21 +125,36 @@ public class TransactionApplication : ITransactionApplication
 
     public async Task<TransactionDto> GetById(int id)
     {
-        var t = await _datacontext.Transactions.FindAsync(id);
+        var userId = GetUserId();
 
-        var dto = new TransactionDto();
-        dto.Id = t.Id;
-        dto.CustomerId = t.CustomerId;
-        dto.TransactionType = t.TransactionType;
-        dto.Amount = t.Amount;
+        var t = await _datacontext.Transactions
+            .Include(x => x.Customer)
+            .FirstOrDefaultAsync(x => x.Id == id && x.Customer.UserId == userId);
 
-        return dto;
+        if (t == null)
+            throw new Exception("Transaction not found or unauthorized");
+
+        return new TransactionDto
+        {
+            Id = t.Id,
+            CustomerId = t.CustomerId,
+            TransactionType = t.TransactionType,
+            Amount = t.Amount
+        };
     }
 
     public async Task Update(int id, CreateTransactionDto dto)
     {
-        var transaction = await _datacontext.Transactions.FindAsync(id);
-        var customer = await _datacontext.Customers.FindAsync(transaction.CustomerId);
+        var userId = GetUserId();
+
+        var transaction = await _datacontext.Transactions
+            .Include(x => x.Customer)
+            .FirstOrDefaultAsync(x => x.Id == id && x.Customer.UserId == userId);
+
+        if (transaction == null)
+            throw new Exception("Transaction not found or unauthorized");
+
+        var customer = transaction.Customer;
 
         if (transaction.TransactionType == TransactionType.Credit)
             customer.Balance -= transaction.Amount;

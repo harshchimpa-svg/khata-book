@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Application.PaymentLogs;
 using Application.PaymentLogs.Dto;
+using Microsoft.AspNetCore.Authorization;
 
 namespace WebApi.Controllers
 {
@@ -15,6 +16,7 @@ namespace WebApi.Controllers
             _paymentLogApplication = paymentLogApplication;
         }
 
+        [Authorize(Roles =  "Admin")]
         [HttpGet]
         public async Task<ActionResult<List<PaymentLogDto>>> GetAll()
         {

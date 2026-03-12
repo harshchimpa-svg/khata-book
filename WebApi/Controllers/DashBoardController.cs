@@ -17,6 +17,7 @@ namespace WebAPI.Controllers
             _dashBoardApplication = dashBoardApplication;
         }
 
+        [Authorize(Roles =  "Admin,Employee")]
         [HttpGet]
         public async Task<IActionResult> GetUserDashboard(CancellationToken cancellationToken)
         {
