@@ -51,7 +51,7 @@ public class AuthService : IAuthService
     public async Task RegisterEmployeeAsync(CreateUserDto request)
     {
         var existing = await _users.GetByEmail(request.Email);
-        if (existing != null) throw new Exception("User already exists");
+        if (existing != null) throw new Exception("Employee already exists");
 
         var user = new User
         {
@@ -67,6 +67,25 @@ public class AuthService : IAuthService
         await SendOtpToEmailAsync(user);
     }
 
+    public async Task RegisterTrainerAsync(CreateUserDto request)
+    {
+        var existing = await _users.GetByEmail(request.Email);
+        if (existing != null) throw new Exception("Trainer already exists");
+
+        var user = new User
+        {
+            UserName = request.UserName,
+            Email = request.Email,
+            RoleType = RoleType.Trainer 
+        };
+
+        user.PasswordHash = _hasher.HashPassword(user, request.Password);
+
+        await _users.AddAsync(user);
+
+        await SendOtpToEmailAsync(user);
+    }
+    
     public async Task<string> LoginAsync(CreateUserDto request)
     {
         var user = await _users.GetByEmail(request.Email)

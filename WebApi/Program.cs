@@ -1,20 +1,46 @@
 using System.Text;
 using Application;
 using Application.Abouts;
+using Application.CartItems;
 using Application.Categories;
 using Application.Contacts;
 using Application.Customers;
+using Application.DashBoards;
+using Application.DietDocuments;
+using Application.Dites;
+using Application.Dites.Dto;
+using Application.ExerciseDocuments;
+using Application.Exercises;
+using Application.GymDocuments;
+using Application.GymProducts;
+using Application.Gyms;
 using Application.PaymentLogs;
+using Application.ProductDocuments;
+using Application.SalePayments;
+using Application.SaleProducts;
+using Application.Sales;
 using Application.ShopSettings;
 using Application.Transactions;
 using Data;
 using Data.Aboutes;
+using Data.CartItems;
 using Data.Categories;
 using Data.Contacts;
 using Data.Customers;
+using Data.DiteDocuments;
+using Data.Dites;
+using Data.ExerciseDocuments;
+using Data.Exercises;
+using Data.GymDocuments;
+using Data.GymProducts;
+using Data.Gyms;
 using Data.PaymentLogs;
+using Data.ProductDocuments;
 using Data.Repositories;
 using Data.Repositorys;
+using Data.SalePayments;
+using Data.SaleProducts;
+using Data.Sales;
 using Data.Services;
 using Data.Services.JwtToken;
 using Data.ShopSettings;
@@ -24,13 +50,15 @@ using Infrastructure.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add controllers
 builder.Services.AddControllers();
+
+// Register IHttpContextAccessor for DI (required for DashBoardApplication)
+builder.Services.AddHttpContextAccessor();
 
 // Configure PostgreSQL DbContext
 builder.Services.AddDbContext<DataContext>(options =>
@@ -57,6 +85,32 @@ builder.Services.AddTransient<ICategoryRepository, CategoryRepository>();
 builder.Services.AddTransient<ICategoryApplication, CategoryApplication>();
 builder.Services.AddTransient<IContactRepository, ContactRepository>();
 builder.Services.AddTransient<IContactApplication, ContactApplication>();
+builder.Services.AddTransient<IDietDocumentRepository, DietDocumentRepository>();
+builder.Services.AddTransient<IDietDocumentApplication, DietDocumentApplication>();
+builder.Services.AddTransient<IDietRepository, DietRepository>();
+builder.Services.AddTransient<IDiteApplication, DietApplication>();
+builder.Services.AddTransient<IDashBoardApplication, DashBoardApplication>();
+builder.Services.AddTransient<IExerciseRepository, ExerciseRepository>();
+builder.Services.AddTransient<IExerciseApplication, ExerciseApplication>();
+builder.Services.AddTransient<IExerciseDocumentRepository, ExerciseDocumentRepository>();
+builder.Services.AddTransient<IExerciseDocumentApplication, ExerciseDocumentApplication>();
+builder.Services.AddTransient<ICartItemRepository, CartItemRepository>();
+builder.Services.AddTransient<ICartItemApplication, CartItemApplication>();
+builder.Services.AddTransient<IGymDocumentRepository, GymDocumentRepository>();
+builder.Services.AddTransient<IGymDocumentApplication, GymDocumentApplication>();
+builder.Services.AddScoped<IGymProductRepository, GymProductRepository>();
+builder.Services.AddScoped<IGymProductApplication, GymProductApplication>();
+builder.Services.AddScoped<IProductDocumentApplication, ProductDocumentApplication>();
+builder.Services.AddScoped<IProductDocumentRepository, ProductDocumentRepository>();
+builder.Services.AddScoped<IGymApplication, GymApplication>();
+builder.Services.AddScoped<IGymRepository, GymRepository>();
+builder.Services.AddScoped<ISaleApplication, SaleApplication>();
+builder.Services.AddScoped<ISaleRepository, SaleRepository>();
+builder.Services.AddScoped<ISaleProductApplication, SaleProductApplication>();
+builder.Services.AddScoped<ISaleProductRepository, SaleProductRepository>();
+builder.Services.AddScoped<ISalePaymentApplication, SalePaymentApplication>();
+builder.Services.AddScoped<ISalePaymentRepository, SalePaymentRepository>();
+
 
 
 // Swagger & API Explorer

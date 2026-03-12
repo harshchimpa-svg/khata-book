@@ -1,0 +1,77 @@
+﻿using Application.locations.Dto;
+using Data.Locations;
+using Domain;
+
+namespace Application.locations
+{
+    public class LocationApplication : ILocationApplications
+    {
+        private readonly ILocationRepository _locationRepository;
+
+        public LocationApplication(ILocationRepository locationRepository)
+        {
+            _locationRepository = locationRepository;
+        }
+
+        public async Task<string> Create(CreateLocationDto dto)
+        {
+            var location = new Location
+            {
+                Name = dto.Name,
+                ParentId = dto.ParentId,
+                LocationType = dto.LocationType
+            };
+
+            await _locationRepository.Create(location);
+            return "Location Created";
+        }
+
+        public async Task Update(int locationId, CreateLocationDto dto)
+        {
+            var location = await _locationRepository.GetId(locationId);
+
+            if (location == null)
+                throw new Exception("Location not found");
+
+            location.Name = dto.Name;
+            location.ParentId = dto.ParentId;
+            location.LocationType = dto.LocationType;
+
+            await _locationRepository.Update(location);
+        }
+
+        public async Task Delete(int id)
+        {
+            await _locationRepository.Delete(id);
+        }
+
+        public async Task<List<LocationDto>> GetAll()
+        {
+            var locations = await _locationRepository.GetAll();
+
+            return locations.Select(l => new LocationDto
+            {
+                Id = l.Id,
+                Name = l.Name,
+                ParentId = l.ParentId,
+                locationType = l.LocationType
+            }).ToList();
+        }
+
+        public async Task<LocationDto> GetById(int id)
+        {
+            var location = await _locationRepository.GetId(id);
+
+            if (location == null)
+                return null;
+
+            return new LocationDto
+            {
+                Id = location.Id,
+                Name = location.Name,
+                ParentId = location.ParentId,
+                locationType = location.LocationType
+            };
+        }
+    }
+}

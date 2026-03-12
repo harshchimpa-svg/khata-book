@@ -88,7 +88,7 @@ namespace WebApplication2.Controllers
             }
         }
 
-        [HttpPatch("{id}/block")]
+        [HttpPost("{id}/block")]
         public async Task<IActionResult> BlockCustomer(int id)
         {
             try

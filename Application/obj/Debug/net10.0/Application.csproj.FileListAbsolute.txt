@@ -17,3 +17,4 @@
 /Users/apple/Harsh/Backend/KhataBook1/Application/obj/Debug/net10.0/Application.pdb
 /Users/apple/Harsh/Backend/KhataBook1/Application/obj/Debug/net10.0/Application.genruntimeconfig.cache
 /Users/apple/Harsh/Backend/KhataBook1/Application/obj/Debug/net10.0/ref/Application.dll
+/Users/apple/Harsh/Backend/KhataBook1/Application/obj/Debug/net10.0/Application.sourcelink.json

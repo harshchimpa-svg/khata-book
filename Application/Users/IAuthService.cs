@@ -10,5 +10,7 @@ namespace Application
         Task ResetPasswordAsync(CreateUserDto request);
         Task ForgotPasswordAsync(CreateUserDto request);
         Task RegisterEmployeeAsync(CreateUserDto request);
+        Task RegisterTrainerAsync(CreateUserDto request);
+
     }
 }
