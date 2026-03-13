@@ -14,31 +14,31 @@ public class ExerciseRepository:IExerciseRepository
 
     public async Task Delete(int id)    
     {
-        var exercises = await _context.Exercises.FindAsync(id);
-        _context.Exercises.Remove(exercises);
+        var exercise = await _context.Exercises.FindAsync(id);
+        _context.Exercises.Remove(exercise);
         await _context.SaveChangesAsync();   
     }
     public async Task<List<Exercise>> GetAll()
     {
-        var exercises = await _context.Exercises.ToListAsync();
-        return exercises;
+        var exercise = await _context.Exercises.ToListAsync();
+        return exercise;
     }
 
     public async Task<Exercise> GetById(int id)
     {
         return await _context.Exercises.FindAsync(id);
     }
-    public async Task<Exercise> Create(Exercise exercises)
+    public async Task<Exercise> Create(Exercise exercise)
     {
-        await _context.Exercises.AddAsync(exercises);
+        await _context.Exercises.AddAsync(exercise);
         await _context.SaveChangesAsync();
 
-        return exercises;
+        return exercise;
     }
 
-    public async Task Update(Exercise exercises)
+    public async Task Update(Exercise exercise)
     {
-        _context.Exercises.Update(exercises);
+        _context.Exercises.Update(exercise);
         await _context.SaveChangesAsync();
     }
 }

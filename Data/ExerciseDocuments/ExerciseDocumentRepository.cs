@@ -14,8 +14,8 @@ public class ExerciseDocumentRepository:IExerciseDocumentRepository
 
     public async Task Delete(int id)    
     {
-        var exercises = await _context.ExerciseDocuments.FindAsync(id);
-        _context.ExerciseDocuments.Remove(exercises);
+        var exerciseDocument = await _context.ExerciseDocuments.FindAsync(id);
+        _context.ExerciseDocuments.Remove(exerciseDocument);
         await _context.SaveChangesAsync();   
     }
     public async Task<List<ExerciseDocument>> GetAll()
@@ -28,17 +28,17 @@ public class ExerciseDocumentRepository:IExerciseDocumentRepository
     {
         return await _context.ExerciseDocuments.FindAsync(id);
     }
-    public async Task<ExerciseDocument> Create(ExerciseDocument exercises)
+    public async Task<ExerciseDocument> Create(ExerciseDocument exerciseDocument)
     {
-        await _context.ExerciseDocuments.AddAsync(exercises);
+        await _context.ExerciseDocuments.AddAsync(exerciseDocument);
         await _context.SaveChangesAsync();
 
-        return exercises;
+        return exerciseDocument;
     }
 
-    public async Task Update(ExerciseDocument exercises)
+    public async Task Update(ExerciseDocument exerciseDocument)
     {
-        _context.ExerciseDocuments.Update(exercises);
+        _context.ExerciseDocuments.Update(exerciseDocument);
         await _context.SaveChangesAsync();
     }
 }

@@ -14,8 +14,8 @@ public class DietDocumentRepository:IDietDocumentRepository
 
     public async Task Delete(int id)    
     {
-        var about = await _context.DietDocuments.FindAsync(id);
-        _context.DietDocuments.Remove(about);
+        var dietdocument = await _context.DietDocuments.FindAsync(id);
+        _context.DietDocuments.Remove(dietdocument);
         await _context.SaveChangesAsync();   
     }
     public async Task<List<DietDocument>> GetAll()
@@ -28,17 +28,17 @@ public class DietDocumentRepository:IDietDocumentRepository
     {
         return await _context.DietDocuments.FindAsync(id);
     }
-    public async Task<DietDocument> Create(DietDocument about)
+    public async Task<DietDocument> Create(DietDocument dietdocument)
     {
-        await _context.DietDocuments.AddAsync(about);
+        await _context.DietDocuments.AddAsync(dietdocument);
         await _context.SaveChangesAsync();
 
-        return about;
+        return dietdocument;
     }
 
-    public async Task Update(DietDocument about)
+    public async Task Update(DietDocument dietdocument)
     {
-        _context.DietDocuments.Update(about);
+        _context.DietDocuments.Update(dietdocument);
         await _context.SaveChangesAsync();
     }
 }
