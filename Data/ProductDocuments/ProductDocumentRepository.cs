@@ -14,31 +14,31 @@ public class ProductDocumentRepository:IProductDocumentRepository
 
     public async Task Delete(int id)    
     {
-        var about = await _context.ProductDocuments.FindAsync(id);
-        _context.ProductDocuments.Remove(about);
+        var productDocument = await _context.ProductDocuments.FindAsync(id);
+        _context.ProductDocuments.Remove(productDocument);
         await _context.SaveChangesAsync();   
     }
     public async Task<List<ProductDocument>> GetAll()
     {
-        var about = await _context.ProductDocuments.ToListAsync();
-        return about;
+        var productDocument = await _context.ProductDocuments.ToListAsync();
+        return productDocument;
     }
 
     public async Task<ProductDocument> GetById(int id)
     {
         return await _context.ProductDocuments.FindAsync(id);
     }
-    public async Task<ProductDocument> Create(ProductDocument about)
+    public async Task<ProductDocument> Create(ProductDocument productDocument)
     {
-        await _context.ProductDocuments.AddAsync(about);
+        await _context.ProductDocuments.AddAsync(productDocument);
         await _context.SaveChangesAsync();
 
-        return about;
+        return productDocument;
     }
 
-    public async Task Update(ProductDocument about)
+    public async Task Update(ProductDocument productDocument)
     {
-        _context.ProductDocuments.Update(about);
+        _context.ProductDocuments.Update(productDocument);
         await _context.SaveChangesAsync();
     }
 }

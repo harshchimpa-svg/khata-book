@@ -14,31 +14,31 @@ public class MembershipRepository:IMembershipRepository
 
     public async Task Delete(int id)    
     {
-        var about = await _context.Memberships.FindAsync(id);
-        _context.Memberships.Remove(about);
+        var membership = await _context.Memberships.FindAsync(id);
+        _context.Memberships.Remove(membership);
         await _context.SaveChangesAsync();   
     }
     public async Task<List<Membership>> GetAll()
     {
-        var about = await _context.Memberships.ToListAsync();
-        return about;
+        var membership = await _context.Memberships.ToListAsync();
+        return membership;
     }
 
     public async Task<Membership> GetById(int id)
     {
         return await _context.Memberships.FindAsync(id);
     }
-    public async Task<Membership> Create(Membership about)
+    public async Task<Membership> Create(Membership membership)
     {
-        await _context.Memberships.AddAsync(about);
+        await _context.Memberships.AddAsync(membership);
         await _context.SaveChangesAsync();
 
-        return about;
+        return membership;
     }
 
-    public async Task Update(Membership about)
+    public async Task Update(Membership membership)
     {
-        _context.Memberships.Update(about);
+        _context.Memberships.Update(membership);
         await _context.SaveChangesAsync();
     }
 }
