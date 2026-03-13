@@ -44,7 +44,7 @@ public class AboutApplication : IAboutApplication
         {
             Name = dto.Name,
             Profile = imagePath,
-            SubTitel = dto.SubTitel,
+            SubTitle = dto.SubTitle,
             UserId = userId
         };
 
@@ -78,7 +78,7 @@ public class AboutApplication : IAboutApplication
                 Id = x.Id,
                 Name = x.Name,
                 Profile = x.Profile,
-                SubTitel = x.SubTitel,
+                SubTitle = x.SubTitle,
             }).ToList();
     }
 
@@ -96,7 +96,7 @@ public class AboutApplication : IAboutApplication
             Id = about.Id,
             Name = about.Name,
             Profile = about.Profile,
-            SubTitel = about.SubTitel,
+            SubTitle = about.SubTitle,
         };
     }
 
@@ -116,7 +116,7 @@ public class AboutApplication : IAboutApplication
         }
 
         about.Name = input.Name;
-        about.SubTitel = input.SubTitel;
+        about.SubTitle = input.SubTitle;
 
         await _aboutRepository.Update(about);
     }

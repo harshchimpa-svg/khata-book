@@ -15,31 +15,31 @@ public class CategoryRepository:ICategoryRepository
 
     public async Task Delete(int id)    
     {
-        var about = await _context.Categorys.FindAsync(id);
-        _context.Categorys.Remove(about);
+        var category = await _context.Categorys.FindAsync(id);
+        _context.Categorys.Remove(category);
         await _context.SaveChangesAsync();   
     }
     public async Task<List<Category>> GetAll()
     {
-        var about = await _context.Categorys.ToListAsync();
-        return about;
+        var category = await _context.Categorys.ToListAsync();
+        return category;
     }
 
     public async Task<Category> GetById(int id)
     {
         return await _context.Categorys.FindAsync(id);
     }
-    public async Task<Category> Create(Category about)
+    public async Task<Category> Create(Category category)
     {
-        await _context.Categorys.AddAsync(about);
+        await _context.Categorys.AddAsync(category);
         await _context.SaveChangesAsync();
 
-        return about;
+        return category;
     }
 
-    public async Task Update(Category about)
+    public async Task Update(Category category)
     {
-        _context.Categorys.Update(about);
+        _context.Categorys.Update(category);
         await _context.SaveChangesAsync();
     }
 }

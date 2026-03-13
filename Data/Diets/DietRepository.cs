@@ -14,31 +14,31 @@ public class DietRepository:IDietRepository
 
     public async Task Delete(int id)    
     {
-        var about = await _context.Dites.FindAsync(id);
-        _context.Dites.Remove(about);
+        var diet = await _context.Dites.FindAsync(id);
+        _context.Dites.Remove(diet);
         await _context.SaveChangesAsync();   
     }
     public async Task<List<Diet>> GetAll()
     {
-        var about = await _context.Dites.ToListAsync();
-        return about;
+        var diet = await _context.Dites.ToListAsync();
+        return diet;
     }
 
     public async Task<Diet> GetById(int id)
     {
         return await _context.Dites.FindAsync(id);
     }
-    public async Task<Diet> Create(Diet about)
+    public async Task<Diet> Create(Diet diet)
     {
-        await _context.Dites.AddAsync(about);
+        await _context.Dites.AddAsync(diet);
         await _context.SaveChangesAsync();
 
-        return about;
+        return diet;
     }
 
-    public async Task Update(Diet about)
+    public async Task Update(Diet diet)
     {
-        _context.Dites.Update(about);
+        _context.Dites.Update(diet);
         await _context.SaveChangesAsync();
     }
 }
