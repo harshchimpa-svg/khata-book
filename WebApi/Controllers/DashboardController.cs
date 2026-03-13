@@ -8,11 +8,11 @@ namespace WebAPI.Controllers
     [Route("api/dashboard")]
     [ApiController]
     
-    public class DashBoardController : ControllerBase
+    public class DashboardController : ControllerBase
     {
         private readonly IDashBoardApplication _dashBoardApplication;
 
-        public DashBoardController(IDashBoardApplication dashBoardApplication)
+        public DashboardController(IDashBoardApplication dashBoardApplication)
         {
             _dashBoardApplication = dashBoardApplication;
         }
