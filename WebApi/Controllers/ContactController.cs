@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ManjeetFigma.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/contact")]
     [ApiController]
     public class ContactController : ControllerBase
     {
@@ -15,14 +15,14 @@ namespace ManjeetFigma.Controllers
             _contactApp = contactApp;
         }
 
-        [HttpPost("create")]
+        [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateContactDto dto)
         {
             var result = await _contactApp.Create(dto);
             return Ok(result);
         }
 
-        [HttpGet("all")]
+        [HttpGet]
         public async Task<IActionResult> GetAll()
         {
             var contacts = await _contactApp.GetAll();

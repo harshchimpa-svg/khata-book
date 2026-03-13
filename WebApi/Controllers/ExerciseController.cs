@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPI.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/exercise")]
     [ApiController]
     public class ExerciseController : ControllerBase
     {
@@ -15,28 +15,28 @@ namespace WebAPI.Controllers
             _exerciseApplication = exerciseApplication;
         }
 
-        [HttpPost("create")]
+        [HttpPost]
         public async Task<IActionResult> Create(CreateExerciseDto dto)
         {
             var result = await _exerciseApplication.Create(dto);
             return Ok(result);
         }
 
-        [HttpPut("update/{id}")]
+        [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, CreateExerciseDto dto)    
         {
             await _exerciseApplication.Update(id, dto);
             return Ok("Exercise Updated"); 
         }
 
-        [HttpDelete("delete/{id}")]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
             await _exerciseApplication.Delete(id);
             return Ok("Exercise Deleted");
         }
 
-        [HttpGet("all")]
+        [HttpGet]
         public async Task<IActionResult> GetAll()
         {
             var exercises = await _exerciseApplication.GetAll();

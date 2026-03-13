@@ -29,7 +29,7 @@ public class AuthService : IAuthService
         _hasher = new PasswordHasher<User>();
     }
 
-    public async Task RegisterAsync(CreateUserDto request)
+    public async Task RegisterAsync(RegisterRequestDto request)
     {
         var existing = await _users.GetByEmail(request.Email);
         if (existing != null) throw new Exception("User already exists");
@@ -48,7 +48,7 @@ public class AuthService : IAuthService
         await SendOtpToEmailAsync(user);
     }
 
-    public async Task RegisterEmployeeAsync(CreateUserDto request)
+    public async Task RegisterEmployeeAsync(RegisterRequestDto request)
     {
         var existing = await _users.GetByEmail(request.Email);
         if (existing != null) throw new Exception("Employee already exists");
@@ -67,7 +67,7 @@ public class AuthService : IAuthService
         await SendOtpToEmailAsync(user);
     }
 
-    public async Task RegisterTrainerAsync(CreateUserDto request)
+    public async Task RegisterTrainerAsync(RegisterRequestDto request)
     {
         var existing = await _users.GetByEmail(request.Email);
         if (existing != null) throw new Exception("Trainer already exists");
@@ -86,7 +86,7 @@ public class AuthService : IAuthService
         await SendOtpToEmailAsync(user);
     }
     
-    public async Task<string> LoginAsync(CreateUserDto request)
+    public async Task<string> LoginAsync(LoginRequestDto request)
     {
         var user = await _users.GetByEmail(request.Email)
             ?? throw new Exception("User not found");
@@ -102,7 +102,7 @@ public class AuthService : IAuthService
         return _jwt.GenerateToken(user); 
     }
 
-    public async Task<string> VerifyOtpAsync(CreateUserDto request)
+    public async Task<string> VerifyOtpAsync(VerifyOtpRequest request)
     {
         var user = await _users.GetByEmail(request.Email)
             ?? throw new Exception("User not found");
@@ -119,7 +119,7 @@ public class AuthService : IAuthService
         return _jwt.GenerateToken(user);
     }
 
-    public async Task ForgotPasswordAsync(CreateUserDto request)
+    public async Task ForgotPasswordAsync(ForgotPasswordDto request)
     {
         var user = await _users.GetByEmail(request.Email)
             ?? throw new Exception("User not found");
@@ -141,7 +141,7 @@ public class AuthService : IAuthService
             $"<h3>Your Password Reset OTP is <b>{otpCode}</b></h3>");
     }
 
-    public async Task ResetPasswordAsync(CreateUserDto request)
+    public async Task ResetPasswordAsync(ResetPasswordDto request)
     {
         var user = await _users.GetByEmail(request.Email)
             ?? throw new Exception("User not found");

@@ -8,5 +8,5 @@ public interface ICategoryApplication
     Task Delete(int id);
     Task<List<CategoryDto>> GetAll();
     Task<CategoryDto> GetById(int id);
-    Task Update(int Id, CreateCategoryDto update);
+    Task Update(int id, CreateCategoryDto update);
 }

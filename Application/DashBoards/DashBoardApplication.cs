@@ -21,12 +21,11 @@ namespace Application.DashBoards
 
         public async Task<UserDashboardDto> GetUserDashboardAsync(CancellationToken cancellationToken = default)
         {
-            // JWT token se current user ka ID nikalna
             var userId = _httpContextAccessor.HttpContext?.User
                 ?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
             if (string.IsNullOrWhiteSpace(userId))
-                return null; // controller me NotFound handle hoga
+                return null; 
 
             var transactions = await _context.Transactions
                 .AsNoTracking()

@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ManjeetFigma.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/diet")]
     [ApiController]
     public class DietController : ControllerBase
     {
@@ -15,14 +15,14 @@ namespace ManjeetFigma.Controllers
             _dietApp = dietApp;
         }
 
-        [HttpPost("create")]
+        [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateDietDto dto)
         {
             var result = await _dietApp.Create(dto);
             return Ok(result);
         }
 
-        [HttpGet("all")]
+        [HttpGet]
         public async Task<IActionResult> GetAll()
         {
             var diets = await _dietApp.GetAll();

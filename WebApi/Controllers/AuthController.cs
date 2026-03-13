@@ -16,7 +16,7 @@ namespace ManjeetFigma.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] CreateUserDto request)
+        public async Task<IActionResult> Register([FromBody] RegisterRequestDto request)
         {
             try
             {
@@ -29,8 +29,22 @@ namespace ManjeetFigma.Controllers
             }
         }
 
+        [HttpPost("register-trainer")]
+        public async Task<IActionResult> TrainerAsync([FromBody] RegisterRequestDto request)
+        {
+            try
+            {
+                await _auth.RegisterTrainerAsync(request);
+                return Ok(new { message = "Trainer Registered. OTP sent to email." });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+        }
+        
         [HttpPost("register-employee")]
-        public async Task<IActionResult> RegisterEmployee([FromBody] CreateUserDto request)
+        public async Task<IActionResult> RegisterEmployee([FromBody] RegisterRequestDto request)
         {
             try
             {
@@ -44,7 +58,7 @@ namespace ManjeetFigma.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] CreateUserDto request)
+        public async Task<IActionResult> Login([FromBody] LoginRequestDto request)
         {
             try
             {
@@ -58,7 +72,7 @@ namespace ManjeetFigma.Controllers
         }
 
         [HttpPost("verify-otp")]
-        public async Task<IActionResult> VerifyOtp([FromBody] CreateUserDto request)
+        public async Task<IActionResult> VerifyOtp([FromBody] VerifyOtpRequest request)
         {
             try
             {
@@ -76,7 +90,7 @@ namespace ManjeetFigma.Controllers
         }
 
         [HttpPost("forgot-password")]
-        public async Task<IActionResult> ForgotPassword([FromBody] CreateUserDto request)
+        public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordDto request)
         {
             try
             {
@@ -90,7 +104,7 @@ namespace ManjeetFigma.Controllers
         }
 
         [HttpPost("reset-password")]
-        public async Task<IActionResult> ResetPassword([FromBody] CreateUserDto request)
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordDto request)
         {
             try
             {

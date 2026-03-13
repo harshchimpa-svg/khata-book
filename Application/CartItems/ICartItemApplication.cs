@@ -8,5 +8,5 @@ public interface ICartItemApplication
     Task Delete(int id);
     Task<List<CartItemDto>> GetAll();
     Task<CartItemDto> GetById(int id);
-    Task Update(int Id, CreateCartItemDto update);
+    Task Update(int id, CreateCartItemDto update);
 }

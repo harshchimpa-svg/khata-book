@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPI.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/diet-document")]
     [ApiController]
     public class DietDocumentController : ControllerBase
     {
@@ -16,14 +16,14 @@ namespace WebAPI.Controllers
             _dietDocumentApp = dietDocumentApp;
         }
 
-        [HttpPost("create")]
+        [HttpPost]
         public async Task<IActionResult> Create([FromForm] CreateDietDocumentDto dto)
         {
             var result = await _dietDocumentApp.Create(dto);
             return Ok(new { message = result });
         }
 
-        [HttpPut("update/{id}")]
+        [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, [FromForm] CreateDietDocumentDto dto)
         {
             try
@@ -37,14 +37,14 @@ namespace WebAPI.Controllers
             }
         }
 
-        [HttpDelete("delete/{id}")]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
             await _dietDocumentApp.Delete(id);
             return Ok(new { message = "Diet Document Deleted" });
         }
 
-        [HttpGet("all")]
+        [HttpGet]
         public async Task<IActionResult> GetAll()
         {
             var documents = await _dietDocumentApp.GetAll();

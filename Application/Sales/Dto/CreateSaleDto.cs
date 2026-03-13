@@ -2,7 +2,7 @@ namespace Application.Sales.Dto;
 
 public class CreateSaleDto
 {
-    public string? UserId { get; set; }
+    public Guid? UserId { get; set; }
     public bool IsPaid { get; set; }
     public bool IsCanceld { get; set; }
     public string? InvoiceNo { get; set; }

@@ -79,7 +79,6 @@ public class AboutApplication : IAboutApplication
                 Name = x.Name,
                 Profile = x.Profile,
                 SubTitel = x.SubTitel,
-                UserId = x.UserId
             }).ToList();
     }
 
@@ -98,7 +97,6 @@ public class AboutApplication : IAboutApplication
             Name = about.Name,
             Profile = about.Profile,
             SubTitel = about.SubTitel,
-            UserId = about.UserId
         };
     }
 

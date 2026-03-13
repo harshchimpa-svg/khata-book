@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace WebApi.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/exercise-document")]
     [ApiController]
     public class ExerciseDocumentController : ControllerBase
     {
@@ -15,28 +15,28 @@ namespace WebApi.Controllers
             _exerciseDocumentApplication = exerciseDocumentApplication;
         }
 
-        [HttpPost("create")]
+        [HttpPost]
         public async Task<IActionResult> Create([FromForm] CreateExerciseDocumentDto dto)
         {
             var result = await _exerciseDocumentApplication.Create(dto);
             return Ok(result);
         }
 
-        [HttpPut("update/{id}")]
+        [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, [FromForm] CreateExerciseDocumentDto dto)
         {
             await _exerciseDocumentApplication.Update(id, dto);
             return Ok("Exercise Document Updated");
         }
 
-        [HttpDelete("delete/{id}")]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
             await _exerciseDocumentApplication.Delete(id);
             return Ok("Exercise Document Deleted");
         }
 
-        [HttpGet("all")]
+        [HttpGet]
         public async Task<IActionResult> GetAll()
         {
             var documents = await _exerciseDocumentApplication.GetAll();

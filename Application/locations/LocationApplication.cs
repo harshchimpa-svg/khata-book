@@ -54,7 +54,7 @@ namespace Application.locations
                 Id = l.Id,
                 Name = l.Name,
                 ParentId = l.ParentId,
-                locationType = l.LocationType
+                LocationType = l.LocationType
             }).ToList();
         }
 
@@ -70,7 +70,7 @@ namespace Application.locations
                 Id = location.Id,
                 Name = location.Name,
                 ParentId = location.ParentId,
-                locationType = location.LocationType
+                LocationType = location.LocationType
             };
         }
     }

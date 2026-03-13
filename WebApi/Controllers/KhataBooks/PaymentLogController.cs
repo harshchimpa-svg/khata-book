@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 namespace WebApi.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/paymentLog")]
     public class PaymentLogController : ControllerBase
     {
         private readonly IPaymentLogApplication _paymentLogApplication;

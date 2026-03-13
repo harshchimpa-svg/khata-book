@@ -36,8 +36,8 @@ public class ShopSettingApplication : IShopSettingApplication
 
         var shopSetting = new ShopSetting
         {
-            ShopeName = dto.ShopeName,
-            OnerName = dto.OnerName,
+            ShopName = dto.ShopName,
+            OwnerName = dto.OwnerName,
             PhoneNo = dto.PhoneNo,
             Email = dto.Email,
             GstNumber = dto.GstNumber,
@@ -73,8 +73,8 @@ public class ShopSettingApplication : IShopSettingApplication
             .Select(x => new ShopSettingsDto
             {
                 Id = x.Id,
-                ShopeName = x.ShopeName,
-                OnerName = x.OnerName,
+                ShopName = x.ShopName,
+                OwnerName = x.OwnerName,
                 PhoneNo = x.PhoneNo,
                 Email = x.Email,
                 GstNumber = x.GstNumber,
@@ -95,8 +95,8 @@ public class ShopSettingApplication : IShopSettingApplication
         return new ShopSettingsDto
         {
             Id = entity.Id,
-            ShopeName = entity.ShopeName,
-            OnerName = entity.OnerName,
+            ShopName = entity.ShopName,
+            OwnerName = entity.OwnerName,
             PhoneNo = entity.PhoneNo,
             Email = entity.Email,
             GstNumber = entity.GstNumber,
@@ -114,8 +114,8 @@ public class ShopSettingApplication : IShopSettingApplication
         if (entity == null || entity.UserId != userId)
             throw new Exception("Unauthorized access");
 
-        entity.ShopeName = dto.ShopeName;
-        entity.OnerName = dto.OnerName;
+        entity.ShopName = dto.ShopName;
+        entity.OwnerName = dto.OwnerName;
         entity.PhoneNo = dto.PhoneNo;
         entity.Email = dto.Email;
         entity.GstNumber = dto.GstNumber;
