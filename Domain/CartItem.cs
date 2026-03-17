@@ -9,5 +9,5 @@ public class CartItem
 
     [ForeignKey("GymProduct")]
     public int? GymProductId { get; set; }
-    // public GymProduct GymProduct { get; set; }
+    public GymProduct GymProduct { get; set; }
 }

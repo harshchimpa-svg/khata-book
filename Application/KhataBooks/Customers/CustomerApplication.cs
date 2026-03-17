@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using Application.Customers.Dto;
+using AutoMapper;
 using Data.Customers;
 using Data.Services;
 using Domain;
@@ -13,17 +14,20 @@ public class CustomerApplication : ICustomerApplication
     private readonly IFileService _fileService;
     private readonly IEmailService _emailService;
     private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly IMapper _mapper;
 
     public CustomerApplication(
         ICustomerRepository customerRepository,
         IFileService fileService,
         IEmailService emailService,
-        IHttpContextAccessor httpContextAccessor)
+        IHttpContextAccessor httpContextAccessor,
+        IMapper mapper)
     {
         _customerRepository = customerRepository;
         _fileService = fileService;
         _emailService = emailService;
         _httpContextAccessor = httpContextAccessor;
+        _mapper = mapper;
     }
 
     private string GetUserId()
@@ -43,16 +47,9 @@ public class CustomerApplication : ICustomerApplication
 
         var imagePath = await _fileService.UploadImage(dto.Profile, "customer");
 
-        var customer = new Customer
-        {
-            UserId = userId,
-            Name = dto.Name,
-            Email = dto.Email,
-            PhoneNumber = dto.PhoneNumber,
-            Notes = dto.Notes,
-            Balance = dto.Balance,
-            Profile = imagePath
-        };
+        var customer = _mapper.Map<Customer>(dto);
+        customer.UserId = userId;
+        customer.Profile = imagePath;
 
         await _customerRepository.Create(customer);
 
@@ -77,19 +74,11 @@ public class CustomerApplication : ICustomerApplication
 
         var customers = await _customerRepository.GetAll();
 
-        return customers
+        var userCustomers = customers
             .Where(x => x.UserId == userId)
-            .Select(x => new CustomerDto
-            {
-                Id = x.Id,
-                UserId = x.UserId,
-                Name = x.Name,
-                Email = x.Email,
-                PhoneNumber = x.PhoneNumber,
-                Notes = x.Notes,
-                Balance = x.Balance,
-                Profile = x.Profile
-            }).ToList();
+            .ToList();
+
+        return _mapper.Map<List<CustomerDto>>(userCustomers);
     }
 
     public async Task<CustomerDto> GetById(int id)
@@ -101,17 +90,7 @@ public class CustomerApplication : ICustomerApplication
         if (customer == null || customer.UserId != userId)
             throw new Exception("Unauthorized access");
 
-        return new CustomerDto
-        {
-            Id = customer.Id,
-            UserId = customer.UserId,
-            Name = customer.Name,
-            Email = customer.Email,
-            PhoneNumber = customer.PhoneNumber,
-            Notes = customer.Notes,
-            Balance = customer.Balance,
-            Profile = customer.Profile
-        };
+        return _mapper.Map<CustomerDto>(customer);
     }
 
     public async Task Update(int id, CreateCustomerDto input)

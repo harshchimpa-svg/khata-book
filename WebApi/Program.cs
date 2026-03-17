@@ -3,6 +3,7 @@ using Application;
 using Application.Abouts;
 using Application.CartItems;
 using Application.Categories;
+using Application.Common;
 using Application.Contacts;
 using Application.Customers;
 using Application.DashBoards;
@@ -112,6 +113,7 @@ builder.Services.AddScoped<ISalePaymentApplication, SalePaymentApplication>();
 builder.Services.AddScoped<ISalePaymentRepository, SalePaymentRepository>();
 
 
+builder.Services.AddAutoMapper(typeof(Mapping));
 
 // Swagger & API Explorer
 builder.Services.AddEndpointsApiExplorer();

@@ -1,4 +1,5 @@
 using Application.GymProducts.Dto;
+using AutoMapper;
 using Data.GymProducts;
 using Domain;
 
@@ -7,22 +8,20 @@ namespace Application.GymProducts
     public class GymProductApplication : IGymProductApplication
     {
         private readonly IGymProductRepository _gymProductRepository;
+        private readonly IMapper _mapper;
 
-        public GymProductApplication(IGymProductRepository gymProductRepository)
+        public GymProductApplication(IGymProductRepository gymProductRepository, IMapper mapper)
         {
             _gymProductRepository = gymProductRepository;
+            _mapper = mapper;
         }
 
         public async Task<string> Create(CreateGymProductDto dto)
         {
-            var product = new GymProduct
-            {
-                Tax = dto.Tax,
-                Price = dto.Price,
-                CategoryId = dto.CategoryId
-            };
+            var product = _mapper.Map<GymProduct>(dto);
 
             await _gymProductRepository.Create(product);
+
             return "Gym Product Created";
         }
 
@@ -49,13 +48,7 @@ namespace Application.GymProducts
         {
             var products = await _gymProductRepository.GetAll();
 
-            return products.Select(p => new GymProductDto
-            {
-                Id = p.Id,
-                Tax = p.Tax,
-                Price = p.Price,
-                CategoryId = p.CategoryId
-            }).ToList();
+            return _mapper.Map<List<GymProductDto>>(products);
         }
 
         public async Task<GymProductDto> GetById(int id)
@@ -65,13 +58,7 @@ namespace Application.GymProducts
             if (product == null)
                 return null;
 
-            return new GymProductDto
-            {
-                Id = product.Id,
-                Tax = product.Tax,
-                Price = product.Price,
-                CategoryId = product.CategoryId
-            };
+            return _mapper.Map<GymProductDto>(product);
         }
     }
 }

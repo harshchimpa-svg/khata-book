@@ -1,88 +1,82 @@
 using Application.ExerciseDocuments.Dto;
+using AutoMapper;
 using Data.ExerciseDocuments;
-using Data.Services; 
+using Data.Services;
 using Domain;
 
-namespace Application.ExerciseDocuments
+namespace Application.ExerciseDocuments;
+
+public class ExerciseDocumentApplication : IExerciseDocumentApplication
 {
-    public class ExerciseDocumentApplication : IExerciseDocumentApplication
+    private readonly IExerciseDocumentRepository _exerciseDocumentRepository;
+    private readonly IFileService _fileService;
+    private readonly IMapper _mapper;
+
+    public ExerciseDocumentApplication(
+        IExerciseDocumentRepository exerciseDocumentRepository,
+        IFileService fileService,
+        IMapper mapper)
     {
-        private readonly IExerciseDocumentRepository _exerciseDocumentRepository;
-        private readonly IFileService _fileService;
+        _exerciseDocumentRepository = exerciseDocumentRepository;
+        _fileService = fileService;
+        _mapper = mapper;
+    }
 
-        public ExerciseDocumentApplication(
-            IExerciseDocumentRepository exerciseDocumentRepository, 
-            IFileService fileService)
+    public async Task<string> Create(CreateExerciseDocumentDto dto)
+    {
+        if (dto.Document == null || !dto.Document.Any())
+            return "No files uploaded";
+
+        foreach (var file in dto.Document)
         {
-            _exerciseDocumentRepository = exerciseDocumentRepository;
-            _fileService = fileService;
+            var path = await _fileService.UploadImage(file, "exercise-documents");
+
+            var document = _mapper.Map<ExerciseDocument>(dto);
+            document.Document = path;
+
+            await _exerciseDocumentRepository.Create(document);
         }
 
-        public async Task<string> Create(CreateExerciseDocumentDto dto)
+        return "Exercise Documents Uploaded";
+    }
+
+    public async Task Update(int id, CreateExerciseDocumentDto dto)
+    {
+        var existingDocument = await _exerciseDocumentRepository.GetById(id);
+
+        if (existingDocument == null)
+            throw new Exception("Exercise Document not found");
+
+        if (dto.Document != null && dto.Document.Any())
         {
-            if (dto.Document == null || !dto.Document.Any())
-                return "No files uploaded";
-
-            foreach (var file in dto.Document)
-            {
-                var path = await _fileService.UploadImage(file, "exercise-documents");
-
-                var document = new ExerciseDocument
-                {
-                    ExerciseId = dto.ExerciseId,
-                    Document = path
-                };
-
-                await _exerciseDocumentRepository.Create(document);
-            }
-
-            return "Exercise Documents Uploaded";
+            var path = await _fileService.UploadImage(dto.Document.First(), "exercise-documents");
+            existingDocument.Document = path;
         }
 
-        public async Task Update(int id, CreateExerciseDocumentDto dto)
-        {
-            var existingDocument = await _exerciseDocumentRepository.GetById(id);
-            if (existingDocument == null)
-                throw new Exception("Exercise Document not found");
+        existingDocument.ExerciseId = dto.ExerciseId;
 
-            if (dto.Document != null && dto.Document.Any())
-            {
-                var path = await _fileService.UploadImage(dto.Document.First(), "exercise-documents");
-                existingDocument.Document = path;
-            }
+        await _exerciseDocumentRepository.Update(existingDocument);
+    }
 
-            existingDocument.ExerciseId = dto.ExerciseId;
+    public async Task Delete(int id)
+    {
+        await _exerciseDocumentRepository.Delete(id);
+    }
 
-            await _exerciseDocumentRepository.Update(existingDocument);
-        }
+    public async Task<List<ExerciseDocumentDto>> GetAll()
+    {
+        var documents = await _exerciseDocumentRepository.GetAll();
 
-        public async Task Delete(int id)
-        {
-            await _exerciseDocumentRepository.Delete(id);
-        }
+        return _mapper.Map<List<ExerciseDocumentDto>>(documents);
+    }
 
-        public async Task<List<ExerciseDocumentDto>> GetAll()
-        {
-            var documents = await _exerciseDocumentRepository.GetAll();
-            return documents.Select(d => new ExerciseDocumentDto
-            {
-                Id = d.Id,
-                ExerciseId = d.ExerciseId,
-                Document = d.Document
-            }).ToList();
-        }
+    public async Task<ExerciseDocumentDto> GetById(int id)
+    {
+        var document = await _exerciseDocumentRepository.GetById(id);
 
-        public async Task<ExerciseDocumentDto> GetById(int id)
-        {
-            var document = await _exerciseDocumentRepository.GetById(id);
-            if (document == null) return null;
+        if (document == null)
+            return null;
 
-            return new ExerciseDocumentDto
-            {
-                Id = document.Id,
-                ExerciseId = document.ExerciseId,
-                Document = document.Document
-            };
-        }
+        return _mapper.Map<ExerciseDocumentDto>(document);
     }
 }

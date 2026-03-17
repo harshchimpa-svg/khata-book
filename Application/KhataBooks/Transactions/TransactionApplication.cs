@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using Application.Transactions.Dto;
+using AutoMapper;
 using Data;
 using Domain;
 using Domain.Enums;
@@ -12,13 +13,16 @@ public class TransactionApplication : ITransactionApplication
 {
     private readonly DataContext _datacontext;
     private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly IMapper _mapper;
 
     public TransactionApplication(
         DataContext datacontext,
-        IHttpContextAccessor httpContextAccessor)
+        IHttpContextAccessor httpContextAccessor,
+        IMapper mapper)
     {
         _datacontext = datacontext;
         _httpContextAccessor = httpContextAccessor;
+        _mapper = mapper;
     }
 
     private string GetUserId()
@@ -42,12 +46,7 @@ public class TransactionApplication : ITransactionApplication
         if (customer == null)
             throw new Exception("Customer not found or unauthorized");
 
-        var transaction = new Transaction
-        {
-            CustomerId = dto.CustomerId,
-            TransactionType = dto.TransactionType,
-            Amount = dto.Amount
-        };
+        var transaction = _mapper.Map<Transaction>(dto);
 
         await _datacontext.Transactions.AddAsync(transaction);
 
@@ -105,42 +104,21 @@ public class TransactionApplication : ITransactionApplication
             .Where(x => x.Customer.UserId == userId)
             .ToListAsync();
 
-        var list = new List<TransactionDto>();
-
-        foreach (var t in transactions)
-        {
-            var dto = new TransactionDto
-            {
-                Id = t.Id,
-                CustomerId = t.CustomerId,
-                TransactionType = t.TransactionType,
-                Amount = t.Amount
-            };
-
-            list.Add(dto);
-        }
-
-        return list;
+        return _mapper.Map<List<TransactionDto>>(transactions);
     }
 
     public async Task<TransactionDto> GetById(int id)
     {
         var userId = GetUserId();
 
-        var t = await _datacontext.Transactions
+        var transaction = await _datacontext.Transactions
             .Include(x => x.Customer)
             .FirstOrDefaultAsync(x => x.Id == id && x.Customer.UserId == userId);
 
-        if (t == null)
+        if (transaction == null)
             throw new Exception("Transaction not found or unauthorized");
 
-        return new TransactionDto
-        {
-            Id = t.Id,
-            CustomerId = t.CustomerId,
-            TransactionType = t.TransactionType,
-            Amount = t.Amount
-        };
+        return _mapper.Map<TransactionDto>(transaction);
     }
 
     public async Task Update(int id, CreateTransactionDto dto)

@@ -1,4 +1,5 @@
 using Application.Memberships.Dto;
+using AutoMapper;
 using Data.Memberships;
 using Domain;
 
@@ -7,21 +8,17 @@ namespace Application.Memberships;
 public class MembershipApplication : IMembershipApplication
 {
     private readonly IMembershipRepository _membershipRepository;
+    private readonly IMapper _mapper;
 
-    public MembershipApplication(IMembershipRepository membershipRepository)
+    public MembershipApplication(IMembershipRepository membershipRepository, IMapper mapper)
     {
         _membershipRepository = membershipRepository;
+        _mapper = mapper;
     }
 
     public async Task<string> Create(CreateMembershipDto dto)
     {
-        var membership = new Membership
-        {
-            MembershipId = dto.MembershipId,
-            StartDate = dto.StartDate,
-            EndDate = dto.EndDate,
-            UserId = dto.UserId
-        };
+        var membership = _mapper.Map<Membership>(dto);
 
         await _membershipRepository.Create(membership);
 
@@ -52,14 +49,7 @@ public class MembershipApplication : IMembershipApplication
     {
         var memberships = await _membershipRepository.GetAll();
 
-        return memberships.Select(m => new MembershipDto
-        {
-            Id = m.Id,
-            MembershipId = m.MembershipId,
-            StartDate = m.StartDate,
-            EndDate = m.EndDate,
-            UserId = m.UserId
-        }).ToList();
+        return _mapper.Map<List<MembershipDto>>(memberships);
     }
 
     public async Task<MembershipDto> GetById(int id)
@@ -69,13 +59,6 @@ public class MembershipApplication : IMembershipApplication
         if (membership == null)
             return null;
 
-        return new MembershipDto
-        {
-            Id = membership.Id,
-            MembershipId = membership.MembershipId,
-            StartDate = membership.StartDate,
-            EndDate = membership.EndDate,
-            UserId = membership.UserId
-        };
+        return _mapper.Map<MembershipDto>(membership);
     }
 }

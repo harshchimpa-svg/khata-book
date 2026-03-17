@@ -1,4 +1,5 @@
 using Application.CartItems.Dto;
+using AutoMapper;
 using Data.CartItems;
 using Domain;
 
@@ -7,6 +8,14 @@ namespace Application.CartItems;
 public class CartItemApplication : ICartItemApplication
 {
     private readonly ICartItemRepository _cartItemRepository;
+    private readonly IMapper _mapper;
+
+    public CartItemApplication(ICartItemRepository cartItemRepository, IMapper mapper)
+    {
+        _cartItemRepository = cartItemRepository;
+        _mapper = mapper;
+    }
+
 
     public CartItemApplication(ICartItemRepository cartItemRepository)
     {
@@ -15,11 +24,7 @@ public class CartItemApplication : ICartItemApplication
 
     public async Task<string> Create(CreateCartItemDto dto)
     {
-        var cartItem = new CartItem
-        {
-            Quantity = dto.Quantity,
-            GymProductId = dto.GymProductId
-        };
+        CartItem cartItem = _mapper.Map<CartItem>(dto);
 
         await _cartItemRepository.Create(cartItem);
 
@@ -48,12 +53,7 @@ public class CartItemApplication : ICartItemApplication
     {
         var cartItems = await _cartItemRepository.GetAll();
 
-        return cartItems.Select(c => new CartItemDto
-        {
-            Id = c.Id,
-            Quantity = c.Quantity,
-            GymProductId = c.GymProductId
-        }).ToList();
+        return _mapper.Map<List<CartItemDto>>(cartItems);
     }
 
     public async Task<CartItemDto> GetById(int id)
@@ -62,12 +62,7 @@ public class CartItemApplication : ICartItemApplication
 
         if (cartItem == null)
             return null;
-
-        return new CartItemDto
-        {
-            Id = cartItem.Id,
-            Quantity = cartItem.Quantity,
-            GymProductId = cartItem.GymProductId
-        };
+        
+        return _mapper.Map<CartItemDto>(cartItem);
     }
 }

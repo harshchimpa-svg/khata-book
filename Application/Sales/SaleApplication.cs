@@ -1,4 +1,5 @@
 using Application.Sales.Dto;
+using AutoMapper;
 using Data.Sales;
 using Domain;
 
@@ -7,26 +8,20 @@ namespace Application.Sales
     public class SaleApplication : ISaleApplication
     {
         private readonly ISaleRepository _saleRepository;
+        private readonly IMapper _mapper;
 
-        public SaleApplication(ISaleRepository saleRepository)
+        public SaleApplication(ISaleRepository saleRepository, IMapper mapper)
         {
             _saleRepository = saleRepository;
+            _mapper = mapper;
         }
 
         public async Task<string> Create(CreateSaleDto dto)
         {
-            var sale = new Sale
-            {
-                UserId = dto.UserId,
-                IsPaid = dto.IsPaid,
-                IsCanceld = dto.IsCanceld,
-                InvoiceNo = dto.InvoiceNo,
-                Discount = dto.Discount,
-                NetAmount = dto.NetAmount,
-                Tax = dto.Tax
-            };
+            var sale = _mapper.Map<Sale>(dto);
 
             await _saleRepository.Create(sale);
+
             return "Sale Created";
         }
 
@@ -57,17 +52,7 @@ namespace Application.Sales
         {
             var sales = await _saleRepository.GetAll();
 
-            return sales.Select(s => new SaleDto
-            {
-                Id = s.Id,
-                UserId = s.UserId,
-                IsPaid = s.IsPaid,
-                IsCanceld = s.IsCanceld,
-                InvoiceNo = s.InvoiceNo,
-                Discount = s.Discount,
-                NetAmount = s.NetAmount,
-                Tax = s.Tax
-            }).ToList();
+            return _mapper.Map<List<SaleDto>>(sales);
         }
 
         public async Task<SaleDto> GetById(int id)
@@ -77,17 +62,7 @@ namespace Application.Sales
             if (sale == null)
                 return null;
 
-            return new SaleDto
-            {
-                Id = sale.Id,
-                UserId = sale.UserId,
-                IsPaid = sale.IsPaid,
-                IsCanceld = sale.IsCanceld,
-                InvoiceNo = sale.InvoiceNo,
-                Discount = sale.Discount,
-                NetAmount = sale.NetAmount,
-                Tax = sale.Tax
-            };
+            return _mapper.Map<SaleDto>(sale);
         }
     }
 }

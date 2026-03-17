@@ -1,5 +1,6 @@
 using Application.Exercises.Dto;
-using Data.Exercises; 
+using AutoMapper;
+using Data.Exercises;
 using Domain;
 
 namespace Application.Exercises
@@ -7,29 +8,29 @@ namespace Application.Exercises
     public class ExerciseApplication : IExerciseApplication
     {
         private readonly IExerciseRepository _exerciseRepository;
+        private readonly IMapper _mapper;
 
-        public ExerciseApplication(IExerciseRepository exerciseRepository)
+        public ExerciseApplication(IExerciseRepository exerciseRepository, IMapper mapper)
         {
             _exerciseRepository = exerciseRepository;
+            _mapper = mapper;
         }
 
         public async Task<string> Create(CreateExerciseDto dto)
         {
-            var exercise = new Exercise
-            {
-                DietTypeId = dto.DietTypeId,
-                Name = dto.Name,
-                Description = dto.Description
-            };
+            var exercise = _mapper.Map<Exercise>(dto);
 
             await _exerciseRepository.Create(exercise);
+
             return "Exercise Created";
         }
 
         public async Task Update(int id, CreateExerciseDto dto)
         {
             var exercise = await _exerciseRepository.GetById(id);
-            if (exercise == null) throw new Exception("Exercise not found");
+
+            if (exercise == null)
+                throw new Exception("Exercise not found");
 
             exercise.DietTypeId = dto.DietTypeId;
             exercise.Name = dto.Name;
@@ -47,27 +48,17 @@ namespace Application.Exercises
         {
             var exercises = await _exerciseRepository.GetAll();
 
-            return exercises.Select(e => new ExerciseDto
-            {
-                Id = e.Id,
-                DietTypeId = e.DietTypeId,
-                Name = e.Name,
-                Description = e.Description
-            }).ToList();
+            return _mapper.Map<List<ExerciseDto>>(exercises);
         }
 
         public async Task<ExerciseDto> GetById(int id)
         {
             var exercise = await _exerciseRepository.GetById(id);
-            if (exercise == null) return null;
 
-            return new ExerciseDto
-            {
-                Id = exercise.Id,
-                DietTypeId = exercise.DietTypeId,
-                Name = exercise.Name,
-                Description = exercise.Description
-            };
+            if (exercise == null)
+                return null;
+
+            return _mapper.Map<ExerciseDto>(exercise);
         }
     }
 }

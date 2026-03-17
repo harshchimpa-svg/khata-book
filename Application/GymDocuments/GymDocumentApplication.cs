@@ -1,4 +1,5 @@
 using Application.GymDocuments.Dto;
+using AutoMapper;
 using Data.GymDocuments;
 using Data.Services;
 using Domain;
@@ -9,13 +10,16 @@ namespace Application.GymDocuments
     {
         private readonly IGymDocumentRepository _gymDocumentRepository;
         private readonly IFileService _fileService;
+        private readonly IMapper _mapper;
 
         public GymDocumentApplication(
             IGymDocumentRepository gymDocumentRepository,
-            IFileService fileService)
+            IFileService fileService,
+            IMapper mapper)
         {
             _gymDocumentRepository = gymDocumentRepository;
             _fileService = fileService;
+            _mapper = mapper;
         }
 
         public async Task<string> Create(CreateGymDocumentDto dto)
@@ -27,11 +31,8 @@ namespace Application.GymDocuments
             {
                 var path = await _fileService.UploadImage(file, "gym-documents");
 
-                var document = new GymDocument
-                {
-                    GymId = dto.GymId,
-                    ImageUrl = path
-                };
+                var document = _mapper.Map<GymDocument>(dto);
+                document.ImageUrl = path;
 
                 await _gymDocumentRepository.Create(document);
             }
@@ -42,6 +43,7 @@ namespace Application.GymDocuments
         public async Task Update(int id, CreateGymDocumentDto dto)
         {
             var existingDocument = await _gymDocumentRepository.GetById(id);
+
             if (existingDocument == null)
                 throw new Exception("Gym Document not found");
 
@@ -65,25 +67,17 @@ namespace Application.GymDocuments
         {
             var documents = await _gymDocumentRepository.GetAll();
 
-            return documents.Select(d => new GymDocumentDto
-            {
-                Id = d.Id,
-                GymId = d.GymId,
-                ImageUrl = d.ImageUrl
-            }).ToList();
+            return _mapper.Map<List<GymDocumentDto>>(documents);
         }
 
         public async Task<GymDocumentDto> GetById(int id)
         {
             var document = await _gymDocumentRepository.GetById(id);
-            if (document == null) return null;
 
-            return new GymDocumentDto
-            {
-                Id = document.Id,
-                GymId = document.GymId,
-                ImageUrl = document.ImageUrl
-            };
+            if (document == null)
+                return null;
+
+            return _mapper.Map<GymDocumentDto>(document);
         }
     }
 }

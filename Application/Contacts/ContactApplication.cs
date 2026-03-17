@@ -1,5 +1,5 @@
-using Application.Contacts;
 using Application.Contacts.Dto;
+using AutoMapper;
 using Data.Contacts;
 using Domain;
 
@@ -8,29 +8,29 @@ namespace Application.Contacts;
 public class ContactApplication : IContactApplication
 {
     private readonly IContactRepository _contactRepository;
+    private readonly IMapper _mapper;
 
-    public ContactApplication(IContactRepository contactRepository)
+    public ContactApplication(IContactRepository contactRepository, IMapper mapper)
     {
         _contactRepository = contactRepository;
+        _mapper = mapper;
     }
 
     public async Task<string> Create(CreateContactDto dto)
     {
-        var contact = new Contact
-        {
-            Name = dto.Name,
-            Email = dto.Email,
-            Message = dto.Message
-        };
+        var contact = _mapper.Map<Contact>(dto);
 
         await _contactRepository.Create(contact);
+
         return "Contact Created";
     }
 
     public async Task Update(int id, CreateContactDto dto)
     {
         var contact = await _contactRepository.GetById(id);
-        if (contact == null) throw new Exception("Contact not found");
+
+        if (contact == null)
+            throw new Exception("Contact not found");
 
         contact.Name = dto.Name;
         contact.Email = dto.Email;
@@ -48,26 +48,16 @@ public class ContactApplication : IContactApplication
     {
         var contacts = await _contactRepository.GetAll();
 
-        return contacts.Select(c => new ContactDto
-        {
-            Id = c.Id,
-            Name = c.Name,
-            Email = c.Email,
-            Message = c.Message
-        }).ToList();
+        return _mapper.Map<List<ContactDto>>(contacts);
     }
 
     public async Task<ContactDto> GetById(int id)
     {
         var contact = await _contactRepository.GetById(id);
-        if (contact == null) return null;
 
-        return new ContactDto
-        {
-            Id = contact.Id,
-            Name = contact.Name,
-            Email = contact.Email,
-            Message = contact.Message
-        };
+        if (contact == null)
+            return null;
+
+        return _mapper.Map<ContactDto>(contact);
     }
 }

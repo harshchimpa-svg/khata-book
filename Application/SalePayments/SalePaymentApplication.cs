@@ -1,4 +1,5 @@
 using Application.SalePayments.Dto;
+using AutoMapper;
 using Data.SalePayments;
 using Domain;
 
@@ -7,24 +8,20 @@ namespace Application.SalePayments
     public class SalePaymentApplication : ISalePaymentApplication
     {
         private readonly ISalePaymentRepository _salePaymentRepository;
+        private readonly IMapper _mapper;
 
-        public SalePaymentApplication(ISalePaymentRepository salePaymentRepository)
+        public SalePaymentApplication(ISalePaymentRepository salePaymentRepository, IMapper mapper)
         {
             _salePaymentRepository = salePaymentRepository;
+            _mapper = mapper;
         }
 
         public async Task<string> Create(CreateSalePaymentDto dto)
         {
-            var payment = new SalePayment
-            {
-                SaleId = dto.SaleId,
-                MethodType = dto.MethodType,
-                NetAmount = dto.NetAmount,
-                PaymentDate = dto.PaymentDate,
-                StatusType = dto.StatusType
-            };
+            var payment = _mapper.Map<SalePayment>(dto);
 
             await _salePaymentRepository.Create(payment);
+
             return "Sale Payment Created";
         }
 
@@ -53,15 +50,7 @@ namespace Application.SalePayments
         {
             var payments = await _salePaymentRepository.GetAll();
 
-            return payments.Select(p => new SalePaymentDto
-            {
-                Id = p.Id,
-                SaleId = p.SaleId,
-                MethodType = p.MethodType,
-                NetAmount = p.NetAmount,
-                PaymentDate = p.PaymentDate,
-                StatusType = p.StatusType
-            }).ToList();
+            return _mapper.Map<List<SalePaymentDto>>(payments);
         }
 
         public async Task<SalePaymentDto> GetById(int id)
@@ -71,15 +60,7 @@ namespace Application.SalePayments
             if (payment == null)
                 return null;
 
-            return new SalePaymentDto
-            {
-                Id = payment.Id,
-                SaleId = payment.SaleId,
-                MethodType = payment.MethodType,
-                NetAmount = payment.NetAmount,
-                PaymentDate = payment.PaymentDate,
-                StatusType = payment.StatusType
-            };
+            return _mapper.Map<SalePaymentDto>(payment);
         }
     }
 }

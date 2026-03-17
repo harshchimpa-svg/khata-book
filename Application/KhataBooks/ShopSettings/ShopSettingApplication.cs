@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using Application.ShopSettings.Dto;
+using AutoMapper;
 using Data.ShopSettings;
 using Domain;
 using Microsoft.AspNetCore.Http;
@@ -10,13 +11,16 @@ public class ShopSettingApplication : IShopSettingApplication
 {
     private readonly IShopSettingRepository _shopSettingRepository;
     private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly IMapper _mapper;
 
     public ShopSettingApplication(
         IShopSettingRepository shopSettingRepository,
-        IHttpContextAccessor httpContextAccessor)
+        IHttpContextAccessor httpContextAccessor,
+        IMapper mapper)
     {
         _shopSettingRepository = shopSettingRepository;
         _httpContextAccessor = httpContextAccessor;
+        _mapper = mapper;
     }
 
     private string GetUserId()
@@ -34,16 +38,8 @@ public class ShopSettingApplication : IShopSettingApplication
     {
         var userId = GetUserId();
 
-        var shopSetting = new ShopSetting
-        {
-            ShopName = dto.ShopName,
-            OwnerName = dto.OwnerName,
-            PhoneNo = dto.PhoneNo,
-            Email = dto.Email,
-            GstNumber = dto.GstNumber,
-            EmployeeId = dto.EmployeeId,
-            UserId = userId
-        };
+        var shopSetting = _mapper.Map<ShopSetting>(dto);
+        shopSetting.UserId = userId;
 
         await _shopSettingRepository.Create(shopSetting);
 
@@ -68,19 +64,9 @@ public class ShopSettingApplication : IShopSettingApplication
 
         var list = await _shopSettingRepository.GetAll();
 
-        return list
-            .Where(x => x.UserId == userId)
-            .Select(x => new ShopSettingsDto
-            {
-                Id = x.Id,
-                ShopName = x.ShopName,
-                OwnerName = x.OwnerName,
-                PhoneNo = x.PhoneNo,
-                Email = x.Email,
-                GstNumber = x.GstNumber,
-                EmployeeId = x.EmployeeId,
-                UserId = x.UserId
-            }).ToList();
+        var userSettings = list.Where(x => x.UserId == userId).ToList();
+
+        return _mapper.Map<List<ShopSettingsDto>>(userSettings);
     }
 
     public async Task<ShopSettingsDto> GetById(int id)
@@ -92,17 +78,7 @@ public class ShopSettingApplication : IShopSettingApplication
         if (entity == null || entity.UserId != userId)
             throw new Exception("Unauthorized access");
 
-        return new ShopSettingsDto
-        {
-            Id = entity.Id,
-            ShopName = entity.ShopName,
-            OwnerName = entity.OwnerName,
-            PhoneNo = entity.PhoneNo,
-            Email = entity.Email,
-            GstNumber = entity.GstNumber,
-            EmployeeId = entity.EmployeeId,
-            UserId = entity.UserId
-        };
+        return _mapper.Map<ShopSettingsDto>(entity);
     }
 
     public async Task Update(int id, CreateShopSettingDto dto)

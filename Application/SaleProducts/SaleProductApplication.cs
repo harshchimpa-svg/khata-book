@@ -1,4 +1,5 @@
 using Application.SaleProducts.Dto;
+using AutoMapper;
 using Data.SaleProducts;
 using Domain;
 
@@ -7,25 +8,20 @@ namespace Application.SaleProducts
     public class SaleProductApplication : ISaleProductApplication
     {
         private readonly ISaleProductRepository _saleProductRepository;
+        private readonly IMapper _mapper;
 
-        public SaleProductApplication(ISaleProductRepository saleProductRepository)
+        public SaleProductApplication(ISaleProductRepository saleProductRepository, IMapper mapper)
         {
             _saleProductRepository = saleProductRepository;
+            _mapper = mapper;
         }
 
         public async Task<string> Create(CreateSaleProductDto dto)
         {
-            var saleProduct = new SaleProduct
-            {
-                SaleId = dto.SaleId,
-                ProductId = dto.ProductId,
-                Quantity = dto.Quantity,
-                Price = dto.Price,
-                Discount = dto.Discount,
-                Tax = dto.Tax
-            };
+            var saleProduct = _mapper.Map<SaleProduct>(dto);
 
             await _saleProductRepository.Create(saleProduct);
+
             return "Sale Product Created";
         }
 
@@ -55,16 +51,7 @@ namespace Application.SaleProducts
         {
             var saleProducts = await _saleProductRepository.GetAll();
 
-            return saleProducts.Select(s => new SaleProductDto
-            {
-                Id = s.Id,
-                SaleId = s.SaleId,
-                ProductId = s.ProductId,
-                Quantity = s.Quantity,
-                Price = s.Price,
-                Discount = s.Discount,
-                Tax = s.Tax
-            }).ToList();
+            return _mapper.Map<List<SaleProductDto>>(saleProducts);
         }
 
         public async Task<SaleProductDto> GetById(int id)
@@ -74,16 +61,7 @@ namespace Application.SaleProducts
             if (saleProduct == null)
                 return null;
 
-            return new SaleProductDto
-            {
-                Id = saleProduct.Id,
-                SaleId = saleProduct.SaleId,
-                ProductId = saleProduct.ProductId,
-                Quantity = saleProduct.Quantity,
-                Price = saleProduct.Price,
-                Discount = saleProduct.Discount,
-                Tax = saleProduct.Tax
-            };
+            return _mapper.Map<SaleProductDto>(saleProduct);
         }
     }
 }

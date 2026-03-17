@@ -1,5 +1,6 @@
 using Application.Dites.Dto;
-using Data.Dites; 
+using AutoMapper;
+using Data.Dites;
 using Domain;
 
 namespace Application.Dites
@@ -7,30 +8,29 @@ namespace Application.Dites
     public class DietApplication : IDietApplication
     {
         private readonly IDietRepository _dietRepository;
+        private readonly IMapper _mapper;
 
-        public DietApplication(IDietRepository dietRepository)
+        public DietApplication(IDietRepository dietRepository, IMapper mapper)
         {
             _dietRepository = dietRepository;
+            _mapper = mapper;
         }
 
         public async Task<string> Create(CreateDietDto dto)
         {
-            var diet = new Diet
-            {
-                DietTypeId = dto.DietTypeId,
-                Name = dto.Name,
-                Time = dto.Time,
-                Description = dto.Description
-            };
+            var diet = _mapper.Map<Diet>(dto);
 
             await _dietRepository.Create(diet);
+
             return "Diet Created";
         }
 
         public async Task Update(int id, CreateDietDto dto)
         {
             var diet = await _dietRepository.GetById(id);
-            if (diet == null) throw new Exception("Diet not found");
+
+            if (diet == null)
+                throw new Exception("Diet not found");
 
             diet.DietTypeId = dto.DietTypeId;
             diet.Name = dto.Name;
@@ -49,29 +49,17 @@ namespace Application.Dites
         {
             var diets = await _dietRepository.GetAll();
 
-            return diets.Select(d => new DietDto
-            {
-                Id = d.Id,
-                DietTypeId = d.DietTypeId,
-                Name = d.Name,
-                Time = d.Time,
-                Description = d.Description
-            }).ToList();
+            return _mapper.Map<List<DietDto>>(diets);
         }
 
         public async Task<DietDto> GetById(int id)
         {
             var diet = await _dietRepository.GetById(id);
-            if (diet == null) return null;
 
-            return new DietDto
-            {
-                Id = diet.Id,
-                DietTypeId = diet.DietTypeId,
-                Name = diet.Name,
-                Time = diet.Time,
-                Description = diet.Description
-            };
+            if (diet == null)
+                return null;
+
+            return _mapper.Map<DietDto>(diet);
         }
     }
 }

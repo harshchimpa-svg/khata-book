@@ -1,4 +1,5 @@
 using Application.Categories.Dto;
+using AutoMapper;
 using Data.Categories;
 using Data.Services;
 using Domain;
@@ -9,36 +10,35 @@ public class CategoryApplication : ICategoryApplication
 {
     private readonly ICategoryRepository _categoryRepository;
     private readonly IFileService _fileService;
+    private readonly IMapper _mapper;
 
-    public CategoryApplication(ICategoryRepository aboutRepository, IFileService fileService)
+    public CategoryApplication(ICategoryRepository categoryRepository, IFileService fileService, IMapper mapper)
     {
-        _categoryRepository = aboutRepository;
+        _categoryRepository = categoryRepository;
         _fileService = fileService;
+        _mapper = mapper;
     }
+
     public async Task<string> Create(CreateCategoryDto dto)
     {
-        string imagePath = null;
+        var category = _mapper.Map<Category>(dto);
+
         if (dto.ImageUrl != null)
         {
-            imagePath = await _fileService.UploadImage(dto.ImageUrl, "categories");
+            category.ImageUrl = await _fileService.UploadImage(dto.ImageUrl, "categories");
         }
 
-        var category = new Category
-        {
-            Name = dto.Name,
-            Description = dto.Description,
-            ImageUrl = imagePath,
-            ParentId = dto.ParentId
-        };
-
         await _categoryRepository.Create(category);
+
         return "Category Created";
     }
 
     public async Task Update(int id, CreateCategoryDto dto)
     {
         var category = await _categoryRepository.GetById(id);
-        if (category == null) throw new Exception("Category not found");
+
+        if (category == null)
+            throw new Exception("Category not found");
 
         category.Name = dto.Name;
         category.Description = dto.Description;
@@ -51,6 +51,7 @@ public class CategoryApplication : ICategoryApplication
 
         await _categoryRepository.Update(category);
     }
+
     public async Task Delete(int id)
     {
         await _categoryRepository.Delete(id);
@@ -60,14 +61,7 @@ public class CategoryApplication : ICategoryApplication
     {
         var categories = await _categoryRepository.GetAll();
 
-        return categories.Select(c => new CategoryDto
-        {
-            Id = c.Id,
-            Name = c.Name,
-            Description = c.Description,
-            ImageUrl = c.ImageUrl,
-            ParentId = c.ParentId
-        }).ToList();
+        return _mapper.Map<List<CategoryDto>>(categories);
     }
 
     public async Task<CategoryDto> GetById(int id)
@@ -77,13 +71,6 @@ public class CategoryApplication : ICategoryApplication
         if (category == null)
             return null;
 
-        return new CategoryDto
-        {
-            Id = category.Id,
-            Name = category.Name,
-            Description = category.Description,
-            ImageUrl = category.ImageUrl,
-            ParentId = category.ParentId
-        };
+        return _mapper.Map<CategoryDto>(category);
     }
 }

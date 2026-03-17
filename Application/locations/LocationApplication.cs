@@ -1,4 +1,5 @@
 ﻿using Application.locations.Dto;
+using AutoMapper;
 using Data.Locations;
 using Domain;
 
@@ -7,22 +8,20 @@ namespace Application.locations
     public class LocationApplication : ILocationApplications
     {
         private readonly ILocationRepository _locationRepository;
+        private readonly IMapper _mapper;
 
-        public LocationApplication(ILocationRepository locationRepository)
+        public LocationApplication(ILocationRepository locationRepository, IMapper mapper)
         {
             _locationRepository = locationRepository;
+            _mapper = mapper;
         }
 
         public async Task<string> Create(CreateLocationDto dto)
         {
-            var location = new Location
-            {
-                Name = dto.Name,
-                ParentId = dto.ParentId,
-                LocationType = dto.LocationType
-            };
+            var location = _mapper.Map<Location>(dto);
 
             await _locationRepository.Create(location);
+
             return "Location Created";
         }
 
@@ -49,13 +48,7 @@ namespace Application.locations
         {
             var locations = await _locationRepository.GetAll();
 
-            return locations.Select(l => new LocationDto
-            {
-                Id = l.Id,
-                Name = l.Name,
-                ParentId = l.ParentId,
-                LocationType = l.LocationType
-            }).ToList();
+            return _mapper.Map<List<LocationDto>>(locations);
         }
 
         public async Task<LocationDto> GetById(int id)
@@ -65,13 +58,7 @@ namespace Application.locations
             if (location == null)
                 return null;
 
-            return new LocationDto
-            {
-                Id = location.Id,
-                Name = location.Name,
-                ParentId = location.ParentId,
-                LocationType = location.LocationType
-            };
+            return _mapper.Map<LocationDto>(location);
         }
     }
 }

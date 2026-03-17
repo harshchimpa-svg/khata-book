@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using Application.Abouts.Dto;
+using AutoMapper;
 using Data.Aboutes;
 using Data.Services;
 using Domain;
@@ -12,15 +13,18 @@ public class AboutApplication : IAboutApplication
     private readonly IAboutRepository _aboutRepository;
     private readonly IFileService _fileService;
     private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly IMapper _mapper;
 
     public AboutApplication(
         IAboutRepository aboutRepository,
         IFileService fileService,
-        IHttpContextAccessor httpContextAccessor)
+        IHttpContextAccessor httpContextAccessor,
+        IMapper mapper)
     {
         _aboutRepository = aboutRepository;
         _fileService = fileService;
         _httpContextAccessor = httpContextAccessor;
+        _mapper = mapper;
     }
 
     private string GetUserId()
@@ -40,13 +44,9 @@ public class AboutApplication : IAboutApplication
 
         var imagePath = await _fileService.UploadImage(dto.Profile, "about");
 
-        var about = new About
-        {
-            Name = dto.Name,
-            Profile = imagePath,
-            SubTitle = dto.SubTitle,
-            UserId = userId
-        };
+        var about = _mapper.Map<About>(dto);
+        about.Profile = imagePath;
+        about.UserId = userId;
 
         await _aboutRepository.Create(about);
 
@@ -71,15 +71,9 @@ public class AboutApplication : IAboutApplication
 
         var abouts = await _aboutRepository.GetAll();
 
-        return abouts
-            .Where(x => x.UserId == userId)
-            .Select(x => new AboutDto
-            {
-                Id = x.Id,
-                Name = x.Name,
-                Profile = x.Profile,
-                SubTitle = x.SubTitle,
-            }).ToList();
+        var userAbouts = abouts.Where(x => x.UserId == userId).ToList();
+
+        return _mapper.Map<List<AboutDto>>(userAbouts);
     }
 
     public async Task<AboutDto> GetById(int id)
@@ -91,13 +85,7 @@ public class AboutApplication : IAboutApplication
         if (about == null || about.UserId != userId)
             throw new Exception("Unauthorized access");
 
-        return new AboutDto
-        {
-            Id = about.Id,
-            Name = about.Name,
-            Profile = about.Profile,
-            SubTitle = about.SubTitle,
-        };
+        return _mapper.Map<AboutDto>(about);
     }
 
     public async Task Update(int id, CreateAboutDto input)

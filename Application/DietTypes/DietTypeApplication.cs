@@ -1,38 +1,36 @@
-using System.Security.Claims;
-using Application.Dites.Dto;
 using Application.DiteTypes.Dto;
-using Data;
+using AutoMapper;
 using Data.DiteTypes;
 using Domain;
-using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
 
 namespace Application.DiteTypes;
 
 public class DietTypeApplication : IDietTypeApplication
 {
     private readonly IDietTypeRepository _dietRepository;
+    private readonly IMapper _mapper;
 
-    public DietTypeApplication(IDietTypeRepository dietRepository)
+    public DietTypeApplication(IDietTypeRepository dietRepository, IMapper mapper)
     {
         _dietRepository = dietRepository;
+        _mapper = mapper;
     }
 
     public async Task<string> Create(CreateDietTypeDto dto)
     {
-        var diet = new DietType
-        {
-            Name = dto.Name,
-        };
+        var dietType = _mapper.Map<DietType>(dto);
 
-        await _dietRepository.Create(diet);
+        await _dietRepository.Create(dietType);
+
         return "Diet Created";
     }
 
     public async Task Update(int id, CreateDietTypeDto dto)
     {
         var diet = await _dietRepository.GetById(id);
-        if (diet == null) throw new Exception("Diet not found");
+
+        if (diet == null)
+            throw new Exception("Diet not found");
 
         diet.Name = dto.Name;
 
@@ -48,22 +46,16 @@ public class DietTypeApplication : IDietTypeApplication
     {
         var diets = await _dietRepository.GetAll();
 
-        return diets.Select(d => new DietTypeDto
-        {
-            Id = d.Id,
-            Name = d.Name,
-        }).ToList();
+        return _mapper.Map<List<DietTypeDto>>(diets);
     }
 
     public async Task<DietTypeDto> GetById(int id)
     {
         var diet = await _dietRepository.GetById(id);
-        if (diet == null) return null;
 
-        return new DietTypeDto
-        {
-            Id = diet.Id,
-            Name = diet.Name,
-        };
+        if (diet == null)
+            return null;
+
+        return _mapper.Map<DietTypeDto>(diet);
     }
 }

@@ -1,4 +1,5 @@
 using Application.ProductDocuments.Dto;
+using AutoMapper;
 using Data.ProductDocuments;
 using Data.Services;
 using Domain;
@@ -9,13 +10,16 @@ namespace Application.ProductDocuments
     {
         private readonly IProductDocumentRepository _productDocumentRepository;
         private readonly IFileService _fileService;
+        private readonly IMapper _mapper;
 
         public ProductDocumentApplication(
             IProductDocumentRepository productDocumentRepository,
-            IFileService fileService)
+            IFileService fileService,
+            IMapper mapper)
         {
             _productDocumentRepository = productDocumentRepository;
             _fileService = fileService;
+            _mapper = mapper;
         }
 
         public async Task<string> Create(CreateProductDocumentDto dto)
@@ -66,12 +70,7 @@ namespace Application.ProductDocuments
         {
             var documents = await _productDocumentRepository.GetAll();
 
-            return documents.Select(d => new ProductDocumentDto
-            {
-                Id = d.Id,
-                GymProductId = d.GymProductId,
-                ImageUrl = d.ImageUrl
-            }).ToList();
+            return _mapper.Map<List<ProductDocumentDto>>(documents);
         }
 
         public async Task<ProductDocumentDto> GetById(int id)
@@ -81,12 +80,7 @@ namespace Application.ProductDocuments
             if (document == null)
                 return null;
 
-            return new ProductDocumentDto
-            {
-                Id = document.Id,
-                GymProductId = document.GymProductId,
-                ImageUrl = document.ImageUrl
-            };
+            return _mapper.Map<ProductDocumentDto>(document);
         }
     }
 }
