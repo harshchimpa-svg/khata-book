@@ -11,6 +11,5 @@ namespace Application
         Task ForgotPasswordAsync(ForgotPasswordDto request);
         Task RegisterEmployeeAsync(RegisterRequestDto request);
         Task RegisterTrainerAsync(RegisterRequestDto request);
-
     }
 }
